@@ -58,7 +58,7 @@ export default function Login({ triggerToast }) {
         borderRadius: '24px',
         boxShadow: '0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 1px 1px rgba(0, 0, 0, 0.04)',
         width: '100%',
-        maxWidth: '440px',
+        maxWidth: '460px',
         padding: '40px 36px',
         border: '1px solid rgba(226, 232, 240, 0.8)'
       }}>
@@ -112,7 +112,7 @@ export default function Login({ triggerToast }) {
           
           {/* ROLE SEGMENTED CONTROL */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label style={{ fontSize: '13px', fontWeight: '700', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <label style={{ fontSize: '12px', fontWeight: '700', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Select Account Type
             </label>
             <div style={{
@@ -127,20 +127,16 @@ export default function Login({ triggerToast }) {
                 onClick={() => setRole('customer')}
                 style={{
                   flex: 1,
-                  padding: '10px 14px',
+                  padding: '9px 8px',
                   borderRadius: '9px',
                   fontWeight: '700',
-                  fontSize: '13px',
+                  fontSize: '12px',
                   cursor: 'pointer',
                   border: 'none',
                   backgroundColor: role === 'customer' ? '#ffffff' : 'transparent',
                   color: role === 'customer' ? '#16a34a' : '#64748b',
                   boxShadow: role === 'customer' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px'
+                  transition: 'all 0.2s ease'
                 }}
               >
                 🛒 Customer
@@ -150,23 +146,38 @@ export default function Login({ triggerToast }) {
                 onClick={() => setRole('vendor')}
                 style={{
                   flex: 1,
-                  padding: '10px 14px',
+                  padding: '9px 8px',
                   borderRadius: '9px',
                   fontWeight: '700',
-                  fontSize: '13px',
+                  fontSize: '12px',
                   cursor: 'pointer',
                   border: 'none',
                   backgroundColor: role === 'vendor' ? '#ffffff' : 'transparent',
                   color: role === 'vendor' ? '#16a34a' : '#64748b',
                   boxShadow: role === 'vendor' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px'
+                  transition: 'all 0.2s ease'
                 }}
               >
                 🏪 Vendor
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('admin')}
+                style={{
+                  flex: 1,
+                  padding: '9px 8px',
+                  borderRadius: '9px',
+                  fontWeight: '700',
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  border: 'none',
+                  backgroundColor: role === 'admin' ? '#ffffff' : 'transparent',
+                  color: role === 'admin' ? '#2563eb' : '#64748b',
+                  boxShadow: role === 'admin' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                👑 Admin
               </button>
             </div>
           </div>
@@ -189,8 +200,7 @@ export default function Login({ triggerToast }) {
                 border: '1.5px solid #cbd5e1',
                 backgroundColor: '#f8fafc',
                 fontSize: '14px',
-                color: '#0f172a',
-                transition: 'border-color 0.2s ease'
+                color: '#0f172a'
               }}
             />
           </div>
@@ -213,8 +223,7 @@ export default function Login({ triggerToast }) {
                 border: '1.5px solid #cbd5e1',
                 backgroundColor: '#f8fafc',
                 fontSize: '14px',
-                color: '#0f172a',
-                transition: 'border-color 0.2s ease'
+                color: '#0f172a'
               }}
             />
           </div>
@@ -225,14 +234,14 @@ export default function Login({ triggerToast }) {
             disabled={loading}
             style={{
               padding: '14px',
-              backgroundColor: '#16a34a',
+              backgroundColor: role === 'admin' ? '#2563eb' : '#16a34a',
               color: '#ffffff',
               border: 'none',
               borderRadius: '12px',
               fontWeight: '700',
               fontSize: '15px',
               cursor: loading ? 'wait' : 'pointer',
-              boxShadow: '0 4px 12px rgba(22, 163, 74, 0.3)',
+              boxShadow: role === 'admin' ? '0 4px 12px rgba(37, 99, 235, 0.3)' : '0 4px 12px rgba(22, 163, 74, 0.3)',
               transition: 'all 0.15s ease',
               marginTop: '6px',
               display: 'flex',
@@ -241,7 +250,7 @@ export default function Login({ triggerToast }) {
               gap: '8px'
             }}
           >
-            {loading ? 'Signing In...' : `Sign In as ${role === 'vendor' ? 'Vendor 🏪' : 'Customer 🛒'}`}
+            {loading ? 'Signing In...' : `Sign In as ${role === 'vendor' ? 'Vendor 🏪' : role === 'admin' ? 'Admin 👑' : 'Customer 🛒'}`}
           </button>
 
           {/* REGISTER LINK */}

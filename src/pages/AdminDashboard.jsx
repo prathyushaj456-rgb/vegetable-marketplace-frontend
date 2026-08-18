@@ -5,8 +5,16 @@ export default function AdminDashboard({ triggerToast }) {
   const [vendors, setVendors] = useState([]);
   const [customers, setCustomers] = useState([]);
 
+  // Admin Key Management State
+  const [adminKey, setAdminKey] = useState('');
+  const [newAdminKey, setNewAdminKey] = useState('');
+  const [showKey, setShowKey] = useState(false);
+  const [updatingKey, setUpdatingKey] = useState(false);
+  const [keyMsg, setKeyMsg] = useState('');
+
   useEffect(() => {
     fetchData();
+    fetchAdminKey();
   }, []);
 
   const fetchData = async () => {
@@ -22,6 +30,42 @@ export default function AdminDashboard({ triggerToast }) {
       setCustomers(customerRes.data);
     } catch (err) {
       console.error("Error fetching customers:", err);
+    }
+  };
+
+  const fetchAdminKey = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/auth/admin-key');
+      setAdminKey(res.data.adminKey || 'admin123');
+      setNewAdminKey(res.data.adminKey || 'admin123');
+    } catch (err) {
+      console.error("Error fetching admin key:", err);
+    }
+  };
+
+  const handleUpdateAdminKey = async (e) => {
+    e.preventDefault();
+    if (!newAdminKey.trim()) return alert("Key cannot be empty!");
+    setUpdatingKey(true);
+    setKeyMsg('');
+
+    try {
+      const res = await axios.put('http://localhost:5000/api/auth/admin-key', {
+        newKey: newAdminKey.trim()
+      });
+
+      setAdminKey(res.data.adminKey);
+      setKeyMsg("✅ Admin Security Key updated in MongoDB!");
+
+      if (triggerToast) {
+        triggerToast("🔑 Admin Passkey updated successfully!");
+      }
+
+      setTimeout(() => setKeyMsg(''), 3500);
+    } catch (err) {
+      setKeyMsg("❌ Failed to update key.");
+    } finally {
+      setUpdatingKey(false);
     }
   };
 
@@ -55,8 +99,93 @@ export default function AdminDashboard({ triggerToast }) {
           👑 Executive Admin Dashboard
         </h1>
         <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>
-          Monitor system metrics, vendor storefront accounts, and customer registrations.
+          Monitor system metrics, vendor storefront accounts, customer directory, and dynamic security passkeys.
         </p>
+      </div>
+
+      {/* 🔑 ADMIN SECURITY KEY MANAGEMENT CARD */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        borderRadius: '20px',
+        padding: '28px 32px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.04)',
+        border: '2px solid #2563eb',
+        marginBottom: '32px'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              🔑 Dynamic Admin Passkey Control
+            </h3>
+            <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748b' }}>
+              This key is stored in MongoDB. Anyone registering as an admin must enter this exact key.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowKey(prev => !prev)}
+            style={{
+              padding: '6px 14px',
+              backgroundColor: '#eff6ff',
+              color: '#2563eb',
+              border: '1px solid #bfdbfe',
+              borderRadius: '8px',
+              fontWeight: '700',
+              fontSize: '12px',
+              cursor: 'pointer'
+            }}
+          >
+            {showKey ? '👁️ Hide Passkey' : '👁️ Reveal Passkey'}
+          </button>
+        </div>
+
+        {keyMsg && (
+          <div style={{ backgroundColor: '#dcfce7', color: '#15803d', padding: '10px 16px', borderRadius: '10px', marginBottom: '16px', fontWeight: '700', fontSize: '13px' }}>
+            {keyMsg}
+          </div>
+        )}
+
+        <form onSubmit={handleUpdateAdminKey} style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1', minWidth: '240px' }}>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#475569', marginBottom: '4px' }}>Active Admin Key (MongoDB)</label>
+            <input
+              type={showKey ? 'text' : 'password'}
+              value={newAdminKey}
+              onChange={(e) => setNewAdminKey(e.target.value)}
+              required
+              style={{
+                width: '100%',
+                padding: '11px 14px',
+                borderRadius: '10px',
+                border: '1.5px solid #cbd5e1',
+                backgroundColor: '#f8fafc',
+                fontSize: '14px',
+                fontWeight: '700',
+                letterSpacing: showKey ? 'normal' : '2px'
+              }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={updatingKey}
+            style={{
+              marginTop: '20px',
+              backgroundColor: '#2563eb',
+              color: '#ffffff',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '10px',
+              fontWeight: '700',
+              fontSize: '14px',
+              cursor: updatingKey ? 'wait' : 'pointer',
+              boxShadow: '0 4px 10px rgba(37, 99, 235, 0.25)',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {updatingKey ? 'Saving...' : 'Update Admin Key'}
+          </button>
+        </form>
       </div>
 
       {/* SUMMARY STATS GRID */}
