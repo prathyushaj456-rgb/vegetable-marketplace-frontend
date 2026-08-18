@@ -80,6 +80,17 @@ export default function AdminDashboard({ triggerToast }) {
     }
   };
 
+  const handleRemoveCustomer = async (id, customerName) => {
+    if (!window.confirm(`Delete customer account "${customerName}"?`)) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/vegetables/admin/customer/${id}`);
+      setCustomers((prev) => prev.filter((c) => c._id !== id));
+      if (triggerToast) triggerToast(`🗑️ Deleted customer account "${customerName}".`);
+    } catch (err) {
+      alert("Failed to delete customer.");
+    }
+  };
+
   return (
     <div style={{ padding: '36px 40px', backgroundColor: '#f8fafc', minHeight: 'calc(100vh - 70px)' }}>
       
@@ -249,6 +260,7 @@ export default function AdminDashboard({ triggerToast }) {
                 <th style={{ padding: '14px 24px', color: '#475569', fontWeight: '700' }}>Customer ID</th>
                 <th style={{ padding: '14px 24px', color: '#475569', fontWeight: '700' }}>Name</th>
                 <th style={{ padding: '14px 24px', color: '#475569', fontWeight: '700' }}>Email</th>
+                <th style={{ padding: '14px 24px', color: '#475569', fontWeight: '700' }}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -257,6 +269,9 @@ export default function AdminDashboard({ triggerToast }) {
                   <td style={{ padding: '14px 24px', fontFamily: 'monospace', color: '#2563eb', fontWeight: '700', fontSize: '13px' }}>{cust._id}</td>
                   <td style={{ padding: '14px 24px', fontWeight: '700', color: '#0f172a' }}>{cust.name || 'Customer User'}</td>
                   <td style={{ padding: '14px 24px', color: '#64748b' }}>{cust.email}</td>
+                  <td style={{ padding: '14px 24px' }}>
+                    <button onClick={() => handleRemoveCustomer(cust._id, cust.name || 'Customer')} style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5', padding: '6px 14px', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Delete Customer</button>
+                  </td>
                 </tr>
               ))}
             </tbody>

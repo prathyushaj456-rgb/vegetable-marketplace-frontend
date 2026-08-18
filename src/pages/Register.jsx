@@ -270,7 +270,7 @@ export default function Register({ triggerToast }) {
               </label>
               <input
                 type="password"
-                placeholder="Default passkey: admin123"
+                placeholder="Enter admin security key"
                 required
                 value={adminSecret}
                 onChange={(e) => setAdminSecret(e.target.value)}
@@ -285,7 +285,7 @@ export default function Register({ triggerToast }) {
                 }}
               />
               <span style={{ fontSize: '11px', color: '#64748b' }}>
-                Enter the master security key (Default: <strong>admin123</strong>)
+                Enter the master admin security key
               </span>
             </div>
           )}
